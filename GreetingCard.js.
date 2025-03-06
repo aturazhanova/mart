@@ -1,0 +1,74 @@
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import flowerImage from '/flower-background.jpg';
+import musicFile from '/mama-music.mp3';
+
+const images = [
+  '1.jpeg',
+  '2.jpeg',
+  '3.jpeg',
+  '4.jpeg',
+  '5.jpeg',
+  '6.jpeg'
+];
+
+const wishes = [
+  'Аяулы анашым, сен әлемдегі ең керемет жансың!',
+  'Махаббатың мен қамқорлығың үшін алғыс айтамыз!',
+  'Сен біздің жарығымыз және тірегімізсің, біз сені жақсы көреміз!',
+  'Әр күнің қуанышқа толы болсын!',
+  'Сен тек ең жақсысына лайықсың!',
+  'Мерекеңмен, анашым!'
+];
+
+export default function GreetingCard() {
+  const [currentImage, setCurrentImage] = useState(0);
+  const [currentWish, setCurrentWish] = useState(0);
+
+  useEffect(() => {
+    const imageInterval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+      setCurrentWish((prev) => (prev + 1) % wishes.length);
+    }, 3000);
+    return () => clearInterval(imageInterval);
+  }, []);
+
+  useEffect(() => {
+    const audio = new Audio(musicFile);
+    audio.play();
+    return () => audio.pause();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-pink-100 flex flex-col items-center justify-center" style={{ backgroundImage: `url(${flowerImage})`, backgroundSize: 'cover' }}>
+      <Card className="w-96 p-4 bg-white/80 rounded-2xl shadow-lg">
+        <CardContent className="flex flex-col items-center">
+          <motion.img
+            key={currentImage}
+            src={images[currentImage]}
+            alt="Family"
+            className="rounded-lg w-full h-64 object-cover mb-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+          />
+          <motion.p
+            className="text-lg text-center text-red-500 font-bold"
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            {wishes[currentWish]}
+          </motion.p>
+          <Button className="mt-4 bg-red-500 hover:bg-red-700 text-white rounded-xl">
+            С любовью от нас!
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
